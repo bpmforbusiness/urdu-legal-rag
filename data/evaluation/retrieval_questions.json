@@ -1,0 +1,26 @@
+[
+ {
+  "question": "بھارتی حج کمیٹی کا قیام کس دفعہ کے تحت عمل میں آتا ہے؟",
+  "act": "The-Haj-Committee-Act-2002",
+  "section_no": "3",
+  "verified_against": "section 3 text: 'بھارتی حج کمیٹی کے نام سے ایک کمیٹی تشکیل دی جائے گی'"
+ },
+ {
+  "question": "کمیٹی کن ارکان پر مشتمل ہو گی؟",
+  "act": "The-Haj-Committee-Act-2002",
+  "section_no": "4",
+  "verified_against": "section 4 text: 'کمیٹی مندرج ذیل ارکان پر مشتمل ہو گی، یعنی'"
+ },
+ {
+  "question": "اس ایکٹ میں تعریفات کہاں دی گئی ہیں؟",
+  "act": "The-Haj-Committee-Act-2002",
+  "section_no": "2",
+  "verified_against": "section 2 text: 'اس ایکٹ میں بجائے اس کے کہ سیاق عبارت سے ... معلوم ہو'"
+ },
+ {
+  "question": "کمیٹی کو کیا حیثیت حاصل ہو گی اور اس کی مہر کا کیا حکم ہے؟",
+  "act": "The-Haj-Committee-Act-2002",
+  "section_no": "3",
+  "verified_against": "section 3(2): 'کمیٹی مذکورہ نام سے ایک سند یافتہ جماعت ہو گی ... اور اس کی ایک عام مہر ہو گی'"
+ }
+]
