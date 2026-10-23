@@ -1,0 +1,43 @@
+# GitHub Actions CI.
+#
+# Kept here rather than in .github/workflows/ because pushing a workflow file requires a
+# PAT with the `workflow` scope, and the token used here only carries `repo`.
+# To enable CI:   mkdir -p .github/workflows && cp ci/ci.yml .github/workflows/ci.yml
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Install
+        run: |
+          python -m pip install --upgrade pip
+          pip install pytest ruff pymupdf pydantic numpy pillow
+      - name: Lint
+        run: ruff check src scripts
+      - name: Tests
+        run: pytest -q
+
+  corpus-quality-gate:
+    runs-on: ubuntu-latest
+    needs: test
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Install
+        run: pip install pymupdf pydantic numpy
+      - name: Validate extracted corpus
+        # Fails the build if any act's Urdu ratio < 60% or a page is suspiciously thin.
+        run: python scripts/validate_corpus.py

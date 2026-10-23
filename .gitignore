@@ -1,0 +1,21 @@
+__pycache__/
+*.py[cod]
+.venv/
+.env
+.pytest_cache/
+
+# Corpus + generated artifacts are NOT committed:
+#   PDFs are 11 MB of third-party material, OCR output is regenerable, and the
+#   VLM transcriptions are large. They live in Google Drive (see README) and are
+#   rebuilt with scripts/fetch_corpus.py + scripts/run_extraction.py.
+data/raw/*.pdf
+data/pages/
+data/ocr_cache/
+data/processed/*.json
+data/processed/index/
+data/evaluation/*.json
+!data/evaluation/retrieval_questions.json
+
+.DS_Store
+*.db
+mlruns/
