@@ -12,6 +12,7 @@ import sys
 
 sys.path.insert(0, os.path.expanduser("~/urdu_rag"))
 
+from src.extraction.corrections import apply_corrections, summarize
 from src.extraction.normalize import arabic_ratio, looks_like_urdu, normalize   # noqa: E402
 from src.extraction.ocr import OcrClient, OcrError                              # noqa: E402
 from src.extraction.render import page_count, render_pages                      # noqa: E402
@@ -49,6 +50,9 @@ def extract_act(pdf: str, client: OcrClient, limit_pages: int | None, dpi: int,
                 print(f"  page {idx}: OCR FAILED", flush=True)
                 continue
             clean = normalize(rec["text"])
+        clean, fixed = apply_corrections(clean)
+        if fixed:
+            print(f"  page {idx}: corrections: {summarize(fixed)}", flush=True)
             ratio = arabic_ratio(clean)
             flag = "ok " if looks_like_urdu(clean) else "LOW"
             print(f"  page {idx}: {len(clean):5d} chars, urdu {ratio:5.1%} [{flag}]"
