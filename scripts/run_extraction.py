@@ -50,9 +50,9 @@ def extract_act(pdf: str, client: OcrClient, limit_pages: int | None, dpi: int,
                 print(f"  page {idx}: OCR FAILED", flush=True)
                 continue
             clean = normalize(rec["text"])
-        clean, fixed = apply_corrections(clean)
-        if fixed:
-            print(f"  page {idx}: corrections: {summarize(fixed)}", flush=True)
+            clean, fixed = apply_corrections(clean)
+            if fixed:
+                print(f"  page {idx}: corrections: {summarize(fixed)}", flush=True)
             ratio = arabic_ratio(clean)
             flag = "ok " if looks_like_urdu(clean) else "LOW"
             print(f"  page {idx}: {len(clean):5d} chars, urdu {ratio:5.1%} [{flag}]"
@@ -106,6 +106,23 @@ def main() -> int:
             continue
         res = extract_act(pdf, client, a.limit_pages, a.dpi, workers=a.workers)
         out = os.path.join(PROC, res["act"] + ".json")
+        # Guard: never let an empty/failed run destroy a previously good extraction.
+        if os.path.exists(out) and res["pages_ocred"] == 0:
+            try:
+                prev = json.load(open(out))
+            except Exception:                                       # noqa: BLE001
+                prev = {}
+            if prev.get("pages_ocred", 0) > 0:
+                print(f"  !! REFUSING to overwrite {os.path.basename(out)} with an empty "
+                      f"result (previous run had {prev['pages_ocred']} pages, "
+                      f"{prev.get('chars', 0)} chars)")
+                summary.append({"act": res["act"], "pages_ocred": prev["pages_ocred"],
+                                "chars": prev.get("chars", 0),
+                                "urdu_ratio": prev.get("urdu_ratio", 0),
+                                "sections": len(prev.get("sections", [])),
+                                "warnings": len(prev.get("warnings", [])), "out": out,
+                                "note": "kept previous extraction (new run was empty)"})
+                continue
         json.dump(res, open(out, "w"), ensure_ascii=False, indent=1)
         summary.append({"act": res["act"], "pages_ocred": res["pages_ocred"],
                         "chars": res["chars"], "urdu_ratio": res["urdu_ratio"],
