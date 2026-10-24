@@ -38,6 +38,30 @@ So the hybrid path is **implemented, tested and available** (`--mode hybrid`) bu
 default**, and it should not be re-enabled without a better Urdu lexical analyser
 (stemming / light verb stripping) — otherwise it is a regression dressed as sophistication.
 
+## Chunk-context experiment (adopted)
+
+Diagnosing the one miss above led to a concrete fix. The Right to Information Act's s.3 is
+**96 characters**; the chunk containing its text ranked **54th of 866** for a query that quotes
+it almost verbatim, separated from rank 1 by **0.025 cosine**. Every top-10 hit was 620–800
+characters long. Under mean pooling, a 96-char chunk embeds weakly against 700-char neighbours.
+
+So chunks are now embedded with an **act + section prefix** (`scripts/build_index.py`,
+`embed_text()`), while the *stored* chunk text stays clean for citation:
+
+```
+The Right to Information Act 2005 — دفعہ 3: 3- اس ایکٹ کی تجویزات کے تابع ...
+```
+
+| Index | Recall@1 | Recall@3 | Recall@5 | MRR |
+|---|---|---|---|---|
+| raw chunk text | 0.444 | **0.778** | 0.778 | 0.574 |
+| **with context prefix** (now default) | **0.556** | 0.667 | 0.778 | **0.639** |
+
+Honest reading: **R@1 +0.111 and MRR +0.065, but R@3 −0.111.** With 9 questions each one is
+worth 11 points, so this is one question moving up to rank 1 and one dropping out of the top 3
+— net a wash on ranking, a real gain on rank-1 precision, which is what a citation-answering
+tool is judged on. Recall@5 is unchanged at 7/9.
+
 ## Known limitations
 
 - **9 questions is a small set.** Treat the absolute numbers as indicative, not precise. Each

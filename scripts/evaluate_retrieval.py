@@ -28,9 +28,10 @@ def main() -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("--mode", default="hybrid",
                     choices=("hybrid", "dense", "lexical"))
+    ap.add_argument("--index", default=INDEX, help="index path prefix to evaluate")
     args = ap.parse_args()
-    retriever = Retriever(VectorStore.load(INDEX), Embedder(), mode=args.mode)
-    print(f"mode: {args.mode}")
+    retriever = Retriever(VectorStore.load(args.index), Embedder(), mode=args.mode)
+    print(f"mode: {args.mode} | index: {os.path.basename(args.index)}")
     hits_at = {1: 0, 3: 0, 5: 0}
     rr = 0.0
     for item in qs:
