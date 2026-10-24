@@ -72,13 +72,17 @@ urdu-legal-rag/
 | Page rendering | working — `src/extraction/render.py` |
 | VLM OCR | working — `src/extraction/ocr.py` (cached per page) |
 | Urdu normalisation | working — `src/extraction/normalize.py` |
+| OCR post-correction | working — `src/extraction/corrections.py` (phrase-level, audited) |
 | Section splitting | working — `src/extraction/sections.py` |
-| Extraction pipeline | working — `scripts/run_extraction.py` |
+| Extraction pipeline | working — **248/248 pages, 421,478 chars, 403 sections** |
 | Corpus validation | working — `scripts/validate_corpus.py` |
-| Indexing / retrieval | **not yet built** |
-| Generation / API / eval | **not yet built** |
+| Chunking + indexing | working — **866 chunks**, multilingual-E5-small, 384-dim |
+| Retrieval | working — dense by default; lexical + hybrid available |
+| Retrieval evaluation | working — R@1 0.444, R@3 0.778, MRR 0.574 (9 verified questions) |
+| Generation + API | built — `src/api/main.py` (`/health`, `/search`, `/ask`) |
 
-This table is kept honest on purpose: nothing is listed as done because a file exists.
+See `docs/corpus-results.md` for the extraction numbers and `docs/retrieval-eval.md` for the
+retrieval ablation (including a hypothesis that the measurement disproved).
 
 ## Quickstart
 

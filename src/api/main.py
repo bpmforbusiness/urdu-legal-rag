@@ -22,7 +22,8 @@ _state = {}
 def _load():
     if "retriever" not in _state:
         store = VectorStore.load(INDEX)
-        _state["retriever"] = Retriever(store, Embedder())
+        _state["retriever"] = Retriever(store, Embedder(),
+                                          mode=os.environ.get("RETRIEVAL_MODE", "dense"))
         _state["generator"] = Generator()
     return _state["retriever"], _state["generator"]
 

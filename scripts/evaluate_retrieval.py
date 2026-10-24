@@ -24,7 +24,13 @@ def main() -> int:
         print(f"no labelled questions at {QS}")
         return 1
     qs = json.load(open(QS))
-    retriever = Retriever(VectorStore.load(INDEX), Embedder())
+    import argparse
+    ap = argparse.ArgumentParser()
+    ap.add_argument("--mode", default="hybrid",
+                    choices=("hybrid", "dense", "lexical"))
+    args = ap.parse_args()
+    retriever = Retriever(VectorStore.load(INDEX), Embedder(), mode=args.mode)
+    print(f"mode: {args.mode}")
     hits_at = {1: 0, 3: 0, 5: 0}
     rr = 0.0
     for item in qs:
